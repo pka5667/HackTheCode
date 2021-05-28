@@ -55,7 +55,7 @@ def pri():
     while True:
         # check if to update upcoming contest to live and live to past
         contestStatusChacker()
-        requests.get("http://127.0.0.1:8000/")
+        requests.get("https://hackthecode.herokuapp.com/")
         sleep(60)
 
 

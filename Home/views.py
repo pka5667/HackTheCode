@@ -34,9 +34,14 @@ def index(request):
                     break
                 else:
                     checkUserName = checkUserName + random.choice(string.ascii_letters)
+            userDataFromDjangoAuth = SocialAccount.objects.filter(extra_data__contains=request.user.email)
+            userProfilePicture = userDataFromDjangoAuth[0].extra_data["picture"]
+            userFullName = userDataFromDjangoAuth[0].extra_data["name"]
             record = {
                 'username': userName,
                 'email': request.user.email,
+                'name': userFullName,
+                'profilePicture': userProfilePicture
             }
             userinfo.insert_one(record)  # insert to dbsqlite(django default database)
         else:
@@ -142,17 +147,30 @@ def profilePageHandler(request, userName):
         # [id,name,contestTime,[problems]]
     ]
 
-    for key in user["submittedProblems"]:
-        if key != "practiceProblems":
-            contests = contestsColl.find({'_id': ObjectId(key)})
-            contests = list(contests)
-            if len(contests) == 1:
-                contest = contests[0]
-                contestName = contest["contestName"]
-                contestStart = contest["start"]
-                submissions.append([key, contestName, contestStart, user["submittedProblems"][key]])
+    if "submittedProblems" in user:
+        for key in user["submittedProblems"]:
+            if key != "practiceProblems":
+                contests = contestsColl.find({'_id': ObjectId(key)})
+                contests = list(contests)
+                if len(contests) == 1:
+                    contest = contests[0]
+                    contestName = contest["contestName"]
+                    contestStart = contest["start"]
+                    submissions.append([key, contestName, contestStart, user["submittedProblems"][key]])
 
-    return render(request, 'Home/profile.html', {'userName': userName, "submissions": submissions})
+    # userDataFromDjangoAuth = SocialAccount.objects.filter(extra_data__contains=request.user.email)
+    # userProfilePicture = userDataFromDjangoAuth[0].extra_data["picture"]
+    userProfilePicture = user["profilePicture"]
+    totalPoints = user["totalPoints"]
+    name = user["name"]
+    params = {
+        "name": name,
+        "userName": userName,
+        "profilePicture": userProfilePicture,
+        "submissions": submissions,
+        "totalPoints": totalPoints
+    }
+    return render(request, 'Home/profile.html', params)
 
 
 def handleLogout(request):

@@ -52,11 +52,12 @@ def contestStatusChacker():
 
 # handle upcoming past and live contest time and leaderboard
 def pri():
-    while True:
-        # check if to update upcoming contest to live and live to past
-        contestStatusChacker()
-        requests.get("https://hackthecode.herokuapp.com/")
-        sleep(60)
+    a = 0
+    # while True:
+    #     # check if to update upcoming contest to live and live to past
+    #     contestStatusChacker()
+    #     requests.get("https://hackthecode.herokuapp.com/")
+    #     sleep(60)
 
 
 start_time = threading.Thread(target=pri)

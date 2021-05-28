@@ -1,0 +1,37 @@
+{% extends 'Home/Base.html' %}
+
+{% block title %}leaderboard{% endblock title %}
+
+{% block style %}
+<style>
+  .rowData{
+    background-color: rgba(86, 61, 124, .15);
+    border: 1px solid rgba(86, 61, 124, .2);
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+</style>
+{% endblock style %}
+
+{% block body %}
+<div class="container my-4 text-center">
+  <h4>Ranklist - {{contestName}}</h4>
+  <div class="row mb-3">
+    <div class="col-md-2 themed-grid-col rowData">Rank</div>
+    <div class="col-md-5 themed-grid-col rowData">User Name</div>
+    <div class="col-md-5 themed-grid-col rowData">Score</div>
+  </div>
+  {% load utils %}
+  {% if leaderboard|get_len == 0 %}
+    <div class="col-md-12 rowData">NO SUCCESSFUL SUBMISSION IN THIS CONETST DURING LIVE</div>
+  {% endif %}
+  {% for i in leaderboard %}
+    <div class="row">
+      <div class="col-md-2 themed-grid-col rowData">{{forloop.counter}}</div>
+      <div class="col-md-5 themed-grid-col rowData">{{i.userName}}</div>
+      <div class="col-md-5 themed-grid-col rowData">{{i.points}}</div>
+    </div>
+  {% endfor %}
+  
+</div>
+{% endblock body %}

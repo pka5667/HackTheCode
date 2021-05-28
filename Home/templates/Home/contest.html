@@ -1,0 +1,167 @@
+{% extends 'Home/Base.html' %}
+
+{% load socialaccount %}
+
+{% block title %}Practice{% endblock title %}
+
+{% block style %}
+<style>
+  .pull-right {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .spaceBetween {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card:hover {
+    cursor: pointer;
+  }
+</style>
+{% endblock style %}
+
+{% block body %}
+
+{% if user.is_authenticated == False %}
+<script>
+  alert("Login/Signup to view this page");
+  window.location.href = '/'
+</script>
+{% endif %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-9" id="problemsContainerDiv">
+      {% for problem in problems %}
+      {% comment %} <div>{{i}}</div>
+      <div>{{i.id}}</div> {% endcomment %}
+
+      <a href="/problem/{{contestParams.contestId}}/{{problem.id}}" style="text-decoration: none; color: black;">
+        <div class="container my-4">
+          {% load utils %}
+          <div class="problemCard card shadow p-3 bg-white rounded" style="width: 100%;">
+            <div class="card-body">
+              <div class="spaceBetween">
+                <div>
+                  <h6 class="card-subtitle mb-2 text-muted">PROBLEM STATEMENT</h6>
+                  <h5 class="card-title">{{problem.title|slice:"0:50"}}</h5>
+                  {% if contestParams.contestId == 'practiceProblems' %}
+                    <div class="d-flex">
+                      <p class="card-text mb-0">Difficulty= {{problem.difficulty}}</p> 
+                      <p class="mb-0">, &nbsp;</p>
+                      <p class="card-text mb-0">Max Points= {{problem.maxScore}}</p> 
+                    </div>
+                  {% endif %}
+                </div>
+                <div class="pull-right">
+                  {% comment %} {{user|to_string}} {% endcomment %}
+                  {% comment %} {{problem.submittedBy|get_type}} {% endcomment %}
+                  <button id="btn-problem-{{problem.id}}" class="btn btn-outline-success problem-btn"
+                    style="width: 200px;height: 50px;">
+                    {% if user|to_string not in problem.submittedBy %}
+                    Solve Challenge
+                    {% else %}
+                    Solved ✅
+                    {% endif %}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+
+      <!-- for no contest -->
+      <div class="container my-4">
+        <div class="noProblemCard card shadow p-3 bg-white rounded" style="width: 100%;display: none;">
+          <div class="card-body">
+            <div class="spaceBetween">
+              <div>
+                <h5 class="card-title">OOPS...</h5>
+                <p class="card-text">No Matching Problem Found</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3" style="margin-top: 50px;border-left: 2px solid #bcabab;">
+      <a href="/leaderboard/{{contestParams.contestId}}"><button class="btn btn-outline-success problem-btn"
+          style="width: 200px;height: 50px;">View Leaderboard</button></a>
+      {% if contestParams.contestId == "practiceProblems" %}
+      <div class="mt-4">
+        DIFFICULTY
+        <div class="pl-4">
+          <div style="align-items: center;display: flex;flex-direction: row;">
+            <input type="checkbox" id="easyCheckBox" class="difficultyCheckBox checkBox" value="Easy"
+              onclick="difficultyCheckFunction()">
+            <p style="margin: auto;">Easy</p>
+          </div>
+          <div style="align-items: center;display: flex;flex-direction: row;">
+            <input type="checkbox" id="mediumCheckBox" class="difficultyCheckBox checkBox" value="Medium"
+              onclick="difficultyCheckFunction()">
+            <p style="margin: auto;">Medium</p>
+          </div>
+          <div style="align-items: center;display: flex;flex-direction: row;">
+            <input type="checkbox" id="hardCheckBox" class="difficultyCheckBox checkBox" value="Hard"
+              onclick="difficultyCheckFunction()">
+            <p style="margin: auto;">Hard</p>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div class="my-4" style="justify-content: space-between;display: flex;">
+        <p>Contest Host: </p>
+        <p>{{contestParams.contestHostedBy}}</p>
+      </div>
+      {% endif %}
+      {% comment %} if contest is practice problem then show subdomain {% endcomment %}
+    </div>
+  </div>
+</div>
+<div id="filters" class="filters"></div>
+{% endblock body %}
+
+
+{% block js %}
+<script type="text/javascript">
+  var contests = {{ problems| removeObj_id | safe}};
+
+  function difficultyCheckFunction() {
+    var problemsContainerDiv = document.getElementById("problemsContainerDiv");
+    var problemCards = problemsContainerDiv.getElementsByClassName("problemCard");
+    $(problemCards).hide();
+    $(".noProblemCard").hide();
+
+    var checkBoxes = document.getElementsByClassName("checkBox");
+    checkBoxes = Array.from(checkBoxes);
+    var filter = false;
+    var isFilterPossible = false;
+
+    checkBoxes.forEach(checkBox => {
+      if (checkBox.checked == true) {
+        //then add filter
+        filter = true;
+        for (let i = 0; i < contests.length; i++) {
+          if (checkBox.value == contests[i]["difficulty"]) {
+            isFilterPossible = true;
+            problemCards[i].style.display = "";
+          }
+        }
+      }
+    })
+
+    if (isFilterPossible == false) {
+      $(".noProblemCard").show();
+    }
+    if (filter == false) {
+      $(problemCards).show();
+      $(".noProblemCard").hide();
+    }
+  }
+</script>
+{% endblock js %}

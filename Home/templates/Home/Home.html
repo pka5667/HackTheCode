@@ -1,0 +1,176 @@
+{% extends 'Home/Base.html' %}
+
+{% load socialaccount %}
+
+{% block title %}Home{% endblock title %}
+
+{% block style %}
+<style>
+  .pull-right{
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .card-body-withBtn{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+</style>
+{% endblock style %}
+
+{% block nav-dropdown %}
+<li class="dropdown-item">Total Points: {{totalPoints}}</li>
+<hr>
+{% endblock nav-dropdown %}
+
+{% block body %}
+<!-- for practice problem -->
+<a href="/practice" style="text-decoration: none; color: black;">
+  <div class="container my-4">
+    <div class="card shadow p-3 bg-white rounded w-100">
+      <div class="card-body">
+        <h6 class="card-subtitle mb-2 text-muted">PROBLEM SOLVING</h6>
+        <h5 class="card-title">Problem Solving</h5>
+        <div class="card-body-withBtn">
+          <p class="card-text" style="width:95%;">You got to have that level of knowledge where you totally understand what the problem is. So read it through multiple times, make sure that you really, really understand. If there's some part of it, some word, some question, some piece of it you don't understand, ask questions. Research stuff. Try to think about it and figure that out, okay?
+          </p>
+          <a href="/practice"><button class="btn btn-outline-success" style="width: 240px;height: 50px;">Start Practice</button></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</a>
+
+<hr width="80%">
+{% comment %} for contests fetched {% endcomment %}
+{% load utils %}
+
+{% comment %} live contests {% endcomment %}
+<div class="container my-4">
+  <h4>Live Contests</h4>
+  {% if liveContests|length == 0 %}
+  <div class="card-subtitle my-2 text-muted">No Contest is currenty active</div>
+  {% endif %}
+  </div>
+
+  {% for contest in liveContests %}
+  <div class="container my-4">
+    <a href="/contest/{{contest.id}}" style="text-decoration: none; color: black;">
+      <div class="card shadow p-3 bg-white rounded w-100" style="width: fit-content;">
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">In Progress</h6>
+          <h5 class="card-title">{{contest.contestName}}</h5>
+          <div class="card-body-withBtn">
+            <div class="row align-items-start w-100">
+              <div class="col">
+                Start : {{contest.start}}
+              </div>
+              <div class="col">
+                Hosted By: {{contest.hostedBy}}
+              </div>
+              <div class="col">
+                End : {{contest.end}}
+              </div>
+            </div>
+            {% comment %} <div>
+              {% if user|to_string in contest.registeredUsers %}
+                <a href="/contest/{{contest.id}}"><button class="btn btn-outline-success" style="width: 240px;height: 50px;">Enter Contest</button></a>
+              {% else %}
+                <button class="btn btn-outline-success" style="width: 240px;height: 50px;" disabled>Not Registered</button>
+              {% endif %}
+            </div> {% endcomment %}
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+</div>
+
+{% comment %} upcoming contests {% endcomment %}
+<div class="container my-4">
+  <h4>Upcoming Contests</h4>
+  {% if upcomingContests|length == 0 %}
+  <div class="card-subtitle my-2 text-muted">No Upcoming contest available for now</div>
+  {% endif %}
+  </div>
+
+  {% for contest in upcomingContests %}
+  <div class="container my-4">
+    <div class="card shadow p-3 bg-white rounded w-100" style="width: fit-content;">
+      <div class="card-body">
+        <h6 class="card-subtitle mb-2 text-muted">Upcoming</h6>
+        <h5 class="card-title">{{contest.contestName}}</h5>
+        <div class="card-body-withBtn">
+          <div class="row align-items-start w-100">
+            <div class="col">
+              Start : {{contest.start}}
+            </div>
+            <div class="col">
+              Hosted By: {{contest.hostedBy}}
+            </div>
+            <div class="col">
+              End : {{contest.end}}
+            </div>
+          </div>
+          {% comment %} <div>
+            {% if user|to_string in contest.registeredUsers %}
+              <button class="btn btn-outline-success" style="width: 240px;height: 50px;" disabled>Already Registered</button>
+            {% else %}
+              <a href="/contest/{{contest.id}}"><button class="btn btn-outline-success" style="width: 240px;height: 50px;">Register</button></a>
+            {% endif %}
+          </div> {% endcomment %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% comment %} past contests {% endcomment %}
+<div class="container my-4">
+  <h4>Past Contests</h4>
+  <div class="card-subtitle my-2 text-muted"> (You can solve problems from these contests but will not be added in Leaderboard)</div>
+  {% if pastContests|length == 0 %}
+  <div class="card-subtitle my-2 text-muted">No Contest held on this plateform yet</div>
+  {% endif %}
+  </div>
+
+  {% for contest in pastContests %}
+  <div class="container my-4">
+    <a href="/contest/{{contest.id}}" style="text-decoration: none; color: black;">
+      <div class="card shadow p-3 bg-white rounded w-100" style="width: fit-content;">
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">Past</h6>
+          <h5 class="card-title">{{contest.contestName}}</h5>
+          <div class="card-body-withBtn">
+            <div class="row align-items-start w-100">
+              <div class="col">
+                Start : {{contest.start}}
+              </div>
+              <div class="col">
+                Hosted By: {{contest.hostedBy}}
+              </div>
+              <div class="col">
+                End : {{contest.end}}
+              </div>
+            </div>
+            {% comment %} <div>
+              {% if user|to_string in contest.registeredUsers %}
+                <a href="/contest/{{contest.id}}"><button class="btn btn-outline-success" style="width: 240px;height: 50px;">View Leaderboard</button></a>
+              {% else %}
+                <button class="btn btn-outline-success" style="width: 240px;height: 50px;">Not Participated</button>
+              {% endif %}
+            </div> {% endcomment %}
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+</div>
+
+
+{% endblock body %}

@@ -1,0 +1,1 @@
+web: gunicorn hackerRankClone.wsgi --log-file -

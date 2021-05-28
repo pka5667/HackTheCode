@@ -52,12 +52,11 @@ def contestStatusChacker():
 
 # handle upcoming past and live contest time and leaderboard
 def pri():
-    a = 0
-    # while True:
-    #     # check if to update upcoming contest to live and live to past
-    #     contestStatusChacker()
-    #     requests.get("http://127.0.0.1:8000/")
-    #     sleep(60)
+    while True:
+        # check if to update upcoming contest to live and live to past
+        contestStatusChacker()
+        requests.get("http://127.0.0.1:8000/")
+        sleep(60)
 
 
 start_time = threading.Thread(target=pri)

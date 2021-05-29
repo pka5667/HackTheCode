@@ -377,14 +377,51 @@ def handleCodeSubmision(request, contestId, problemId):
 
 
 def leaderBoardPageHandler(request, contestId):
+    if not request.user.is_authenticated:
+        return HttpResponse("Login/Signup to see leaderboard")
+
     mydb = client['hackerRankClone']  # database name is hackerRankClone
-    if contestId == "practiceProblems":
-        pass
+    myRank = 0
+    myPoints = 0
+    if contestId == "allUsers":
+        mydb = client['hackerRankClone']
+        userinfo = mydb.users  # collection name is users
+        users = userinfo.aggregate([
+            # First sort all the docs by totalPoints
+            {"$sort": {"totalPoints": -1}},
+            # Take the first 100 of those
+            # {"$limit": 100}
+        ])
+        users = list(users)
+        leaderboard = []
+        flag = 0
+        myRank = 0
+        for i in range(0, len(users)):
+            if i <= 100 and "username" in users[i] and "totalPoints" in users[i]:
+                leaderboard.append({
+                    "userName": users[i]["username"],
+                    "points": users[i]["totalPoints"]
+                })
+            if "username" in users[i]:
+                if users[i]["username"] == str(request.user):
+                    myRank = i + 1
+                    myPoints = users[i]["totalPoints"]
+                    flag += 1
+            if i > 100 and flag >= 1:
+                flag += 1
+            if flag >= 2:
+                break
+        # contestName = "Top 100 users"
+        contestName = "All users"
     else:
         contestsColl = mydb.contests  # collection name is contests
         contests = contestsColl.find({"_id": ObjectId(contestId)})
         contestsArr = list(contests)
         contest = contestsArr[0]
         contestName = contest["contestName"]
-        leaderboard = contest["leaderboard"]
-    return render(request, "Home/leaderboard.html", {"contestName": contestName, "leaderboard": leaderboard})
+        if "leaderboard" in contest:
+            leaderboard = contest["leaderboard"]
+        else:
+            leaderboard = []
+    return render(request, "Home/leaderboard.html",
+                  {"contestName": contestName, "leaderboard": leaderboard, "myRank": myRank, "myPoints": myPoints})

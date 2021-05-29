@@ -21,10 +21,20 @@
     <div class="col-md-5 themed-grid-col rowData">User Name</div>
     <div class="col-md-5 themed-grid-col rowData">Score</div>
   </div>
+
+  {% if myRank > 0 %}
+  <div class="row mb-3" style="background-color: #3aca3a;color: white;">
+      <div class="col-md-2 themed-grid-col rowData">{{myRank}}</div>
+      <div class="col-md-5 themed-grid-col rowData">{{user}}</div>
+      <div class="col-md-5 themed-grid-col rowData">{{myPoints}}</div>
+    </div>
+  {% endif %}
+
   {% load utils %}
   {% if leaderboard|get_len == 0 %}
     <div class="col-md-12 rowData">NO SUCCESSFUL SUBMISSION IN THIS CONETST DURING LIVE</div>
   {% endif %}
+
   {% for i in leaderboard %}
     <div class="row">
       <div class="col-md-2 themed-grid-col rowData">{{forloop.counter}}</div>

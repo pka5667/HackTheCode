@@ -1,0 +1,103 @@
+{% extends 'Home/Base.html' %}
+
+{% block title %}About{% endblock title %}
+
+
+{% block style %}
+<style>
+    h1 {
+      font-family: 'Red Hat Display', sans-serif;
+      font-weight: 900;
+      text-align: center;
+      margin: 3% 0;
+      /* font-size: 3.5rem; */
+    }
+
+    h2 {
+      font-family: 'Ubuntu', sans-serif;
+      /* font-size: 2.2rem; */
+      padding: 15% 0 2% 0;
+    }
+
+    p {
+      font-family: 'Montserrat', sans-serif;
+      color: #767575;
+      /* font-size: 1.3rem */
+    }
+
+    .qt-img {
+      width: 100%;
+    }
+
+    .row {
+      background-color: #EFEFEF;
+      margin: 3% 0;
+      padding: 0.5% 10%;
+    }
+
+    .quote-sec {
+      margin-bottom: 5rem;
+    }
+
+    .ftr-icn {
+      width: 60%;
+    }
+
+    .col-md-6 {
+      text-align: center;
+    }
+
+    .cont {
+      text-align: center;
+      padding: 3% 23%;
+    }
+  </style>
+{% endblock style %}
+
+
+{% block body %}
+{% load static %}
+  <!-- quote section -->
+
+  <section class="quote-sec">
+    <div class="container my-4">
+      <img class="qt-img" src="{%static 'Images/quote.png' %}" alt="quote-img">
+    </div>
+  </section>
+  <!-- Feature section -->
+  <section>
+    <div class="container my-4">
+      <h1>Be the 'Pro'</h1>
+      <div class="row">
+        <div class="col-md-6">
+          <img class="ftr-icn" src="{%static 'Images/feature1.png' %}" alt="">
+        </div>
+        <div class="col-md-6">
+          <h2>Prepare With Us</h2>
+          <p>Prepare for an interview with millions of articles and courses designed by experts.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Grow With Us</h2>
+          <p>Gain and share your knowledge & skills with a variety of learning platforms.</p>
+        </div>
+        <div class="col-md-6">
+          <img class="ftr-icn" src="{%static 'Images/feature2.png' %}" alt="">
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Description -->
+  <section>
+    <div class="container-fluid cont">
+      <h1>What We Offer</h1>
+      <p>HackerRank is a web application built to help you practice programming and improve your coding skills. We offer
+        a collection of code challenges that can help you prepare for upcoming job interviews. The coding challenges
+        range in difficulty and they can all be completed straight in our online editor.</p>
+    </div>
+  </section>
+
+{% endblock body %}

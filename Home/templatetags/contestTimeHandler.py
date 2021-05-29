@@ -48,16 +48,29 @@ def contestStatusChacker():
                 # print("Updated One live to past")
 
                 # update points to the each user profile according to percentile system
+                leaderboard = contest["leaderboard"]
+                participated = len(leaderboard)
+                userinfo = mydb.users  # collection name is users
+                for rank in leaderboard:
+                    percentile = (1 - float(leaderboard.index(rank) - 1) / participated) * 100
+                    points = percentile * contest["contestMaxScore"]
+                    users = userinfo.find({'username': rank["userName"]})
+                    user = users[0]
+                    updatedScore = user["totalPoints"] + points
+                    userinfo.update(
+                        {"username": rank["userName"]},
+                        {"$set": {"totalPoints": updatedScore}}
+                    )
 
 
 # handle upcoming past and live contest time and leaderboard
 def pri():
-    a = 0
-    # while True:
-    #     # check if to update upcoming contest to live and live to past
-    #     contestStatusChacker()
-    #     requests.get("https://hackthecode.herokuapp.com/")
-    #     sleep(60)
+    # a = 0
+    while True:
+        # check if to update upcoming contest to live and live to past
+        contestStatusChacker()
+        requests.get("https://hackthecode.herokuapp.com/")
+        sleep(120)
 
 
 start_time = threading.Thread(target=pri)

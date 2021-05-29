@@ -79,6 +79,42 @@ def index(request):
                                               "pastContests": pastContests})
 
 
+def about(request):
+    return render(request, 'Home/about.html')
+
+
+def contact(request):
+    formSubmitted = "No"
+    if request.method == 'POST':
+        try:
+            name = request.POST.get('name', default='')
+            email = request.POST.get('email', default='')
+            phone = request.POST.get('phone', default='')
+            textarea = request.POST.get('txtarea', default='')
+
+            mydb = client["hackerRankClone"]
+            contact_us = mydb.contact_us
+
+            record = {
+                "email": email,
+                "message": textarea,
+                "name": name,
+                "phone": phone,
+                "time": datetime.utcnow()
+            }
+
+            contact_us.insert_one(record)
+
+            formSubmitted = "True"
+        except:
+            formSubmitted = "False"
+
+    params = {
+        'formSubmitted': formSubmitted
+    }
+    return render(request, 'Home/contact.html', params)
+
+
 def contestPageHandler(request, contestId):
     mydb = client['hackerRankClone']  # database name
     contestsColl = mydb.contests  # collection name is practiceProblems

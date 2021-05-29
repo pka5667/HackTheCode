@@ -196,7 +196,10 @@ def profilePageHandler(request, userName):
     # userDataFromDjangoAuth = SocialAccount.objects.filter(extra_data__contains=request.user.email)
     # userProfilePicture = userDataFromDjangoAuth[0].extra_data["picture"]
     userProfilePicture = user["profilePicture"]
-    totalPoints = user["totalPoints"]
+    if "totalPoints" in user:
+        totalPoints = user["totalPoints"]
+    else:
+        totalPoints = 0
     name = user["name"]
     params = {
         "name": name,

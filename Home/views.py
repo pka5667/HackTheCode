@@ -94,7 +94,6 @@ def contact(request):
 
             mydb = client["hackerRankClone"]
             contact_us = mydb.contact_us
-
             record = {
                 "email": email,
                 "message": textarea,

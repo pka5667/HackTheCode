@@ -465,7 +465,11 @@ def leaderBoardPageHandler(request, contestId):
             if "username" in users[i]:
                 if users[i]["username"] == str(request.user):
                     myRank = i + 1
-                    myPoints = users[i]["totalPoints"]
+                    if "totalPoints" in users[i]:
+                        myPoints = users[i]["totalPoints"]
+                    else:
+                        myPoints = 0
+
                     flag += 1
             if i > 100 and flag >= 1:
                 flag += 1

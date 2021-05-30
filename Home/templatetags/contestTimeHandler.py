@@ -74,4 +74,4 @@ def pri():
 
 
 start_time = threading.Thread(target=pri)
-# start_time.start()
+start_time.start()

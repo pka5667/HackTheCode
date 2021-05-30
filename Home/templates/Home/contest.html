@@ -89,12 +89,14 @@
     <!--right side area-->
     <div class="col-md-3" style="margin-top: 50px;border-left: 2px solid #bcabab;">
     {% if contestParams.contestId == "practiceProblems" %}
-      <a href="/leaderboard/allUsers">
+      <a href="/leaderboard/allUsers" class="text-decoration-none">
     {% else %}
-      <a href="/leaderboard/{{contestParams.contestId}}">
+      <a href="/leaderboard/{{contestParams.contestId}}" class="text-decoration-none">
     {% endif %}
-      <button class="btn btn-outline-success problem-btn"
-          style="width: 200px;height: 50px;">View Leaderboard</button></a>
+      <div style="display: flex;justify-content: center;">
+        <button class="btn btn-outline-success problem-btn"
+            style="width: 200px;height: 50px;">View Leaderboard</button>
+      </div></a>
 
       <!--filters-->
       {% if contestParams.contestId == "practiceProblems" %}

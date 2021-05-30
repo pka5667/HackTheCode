@@ -41,43 +41,85 @@
 {% block body %}
 
 <div class="container my-4">
-  <div class="card shadow p-3 bg-white rounded" style="width: 100%;">
-    <div class="card-body">
-      <h6 class="card-subtitle mb-2 text-muted">PROBLEM SOLVING</h6>
-      <h5 class="card-title">{{problem.title}}</h5>
-      <p class="card-text">
-        {{problem.problemStatement|safe}}
-        <!-- safe is used to convert to html -->
-        <br><br>
-        {% for i in problem.sampleInOut %}
-        Sample Input<br>
-        {{i.0|safe}}<br><br>
-        Sample Output<br>
-        {{i.1|safe}}<br><br>
-        {% if i|length > 2 %}
-        Explanation<br>
-        {{i.2|safe}}<br><br>
-        {% endif %}
-        {% endfor %}
-      </p>
-      <div class="pull-right">
-        <form id="submitCodeForm" action="/submit/{{contestId}}/{{problemId}}" method="post"
-          style="display: flex; flex-direction: column;">
-          {% csrf_token %}
-          <select name="language" id="language" style="width: 100px; margin-bottom: 5px;">
-            <option value="C">C</option>
-            <option value="Cpp14">C++14</option>
-            <option value="Java">Java</option>
-            <option value="Python3">Python3</option>
-            <option value="Csharp">Csharp</option>
-            <option value="Php">Php</option>
-          </select>
-          <textarea type="text"
-            style="width: 70%;min-height: 400px;background-color: black;color: white;border: 4px solid green;"
-            name="code">/*Paste your code here*/</textarea><br>
-          <button id="formSubmitBtn" type="submit" class="btn btn-outline-success" style="width: 240px;height: 50px;display: flex;justify-content: center;align-items: center;">Submit</button>
-        </form>
+<div class="row">
+    <!-- Problem Statement -->
+    <div class="col-md-9">
+      <div class="card shadow p-3 bg-white rounded" style="width: 100%;">
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">PROBLEM SOLVING</h6>
+          <h5 class="card-title">{{problem.title}}</h5>
+          <p class="card-text">
+            {{problem.problemStatement|safe}}
+            <!-- safe is used to convert to html -->
+            <br><br>
+            {% for i in problem.sampleInOut %}
+            Sample Input<br>
+            {{i.0|safe}}<br><br>
+            Sample Output<br>
+            {{i.1|safe}}<br><br>
+            {% if i|length > 2 %}
+            Explanation<br>
+            {{i.2|safe}}<br><br>
+            {% endif %}
+            {% endfor %}
+          </p>
+          <div class="pull-right">
+            <form id="submitCodeForm" action="/submit/{{contestId}}/{{problemId}}" method="post"
+              style="display: flex; flex-direction: column;">
+              {% csrf_token %}
+              <select name="language" id="language" style="width: 100px; margin-bottom: 5px;">
+                <option value="C">C</option>
+                <option value="Cpp14">C++14</option>
+                <option value="Java">Java</option>
+                <option value="Python3">Python3</option>
+                <option value="Csharp">Csharp</option>
+                <option value="Php">Php</option>
+              </select>
+              <textarea type="text"
+                style="width: 70%;min-height: 400px;background-color: black;color: white;border: 4px solid green;"
+                name="code">/*Paste your code here*/</textarea><br>
+              <button id="formSubmitBtn" type="submit" class="btn btn-outline-success" style="width: 240px;height: 50px;display: flex;justify-content: center;align-items: center;">Submit</button>
+            </form>
+          </div>
+        </div>
       </div>
+    </div>
+
+    
+    <!--right side area-->
+    <div class="col-md-3" style="margin-top: 50px;border-left: 2px solid #bcabab;color: #738f93;">
+      <div class="mt-4" style="justify-content: space-between;display: flex;">
+        <p>Author: </p>
+        <p>{{problem.author}}</p>
+      </div>
+
+      {% if contestId == 'practiceProblems' %}
+      <div style="justify-content: space-between;display: flex;">
+        <p>Difficulty: </p>
+        <p>{{problem.difficulty}}</p>
+      </div>
+      <div style="justify-content: space-between;display: flex;">
+        <p>Max Score: </p>
+        <p>{{problem.maxScore}}</p>
+      </div>
+      {% endif %}
+
+      <div style="justify-content: space-between;display: flex;">
+        <p>Submitted By: </p>
+        <p>{{problem.submittedBy|length}}</p>
+      </div>
+
+      <!--leaderboard button-->
+      {% if contestId == "practiceProblems" %}
+        <a href="/leaderboard/allUsers" class="text-decoration-none">
+      {% else %}
+        <a href="/leaderboard/{{contestId}}" class="text-decoration-none">
+      {% endif %}
+          <div style="display: flex;justify-content: center;">
+            <button class="btn btn-outline-success problem-btn"
+                style="width: 200px;height: 50px;">View Leaderboard</button>
+          </div>
+        </a>
     </div>
   </div>
 </div>

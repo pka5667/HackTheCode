@@ -51,12 +51,12 @@
         <br><br>
         {% for i in problem.sampleInOut %}
         Sample Input<br>
-        {{i.0}}<br><br>
+        {{i.0|safe}}<br><br>
         Sample Output<br>
-        {{i.1}}<br><br>
+        {{i.1|safe}}<br><br>
         {% if i|length > 2 %}
         Explanation<br>
-        {{i.2}}<br><br>
+        {{i.2|safe}}<br><br>
         {% endif %}
         {% endfor %}
       </p>

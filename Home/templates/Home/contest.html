@@ -165,20 +165,17 @@
     var filter = false;
     var isFilterPossible = false;
 
-    statusFilters = ["solved", "unsolved"]
-    difficultyFilters = ["Easy", "Medium", "Hard"]
+    statusFilters = []
+    difficultyFilters = []
     checkBoxes.forEach(checkBox => {
       if (checkBox.checked == true) {
         //then add filter
         filter = true;
-      }else{
         if(checkBox.classList.contains("statusCheckBox")){
-          var index = statusFilters.indexOf(checkBox.value)
-          statusFilters.splice(index, 1)
+          statusFilters.push(checkBox.value)
         }
         else if(checkBox.classList.contains("difficultyCheckBox")){
-          var index = difficultyFilters.indexOf(checkBox.value)
-          difficultyFilters.splice(index, 1)
+          difficultyFilters.push(checkBox.value)
         }
       }
     })
@@ -191,7 +188,23 @@
       }else{
         status = "unsolved"
       }
-      if (statusFilters.includes(status) && difficultyFilters.includes(contests[i]["difficulty"])) {
+
+      var filterAdd = 0;
+      if(statusFilters.length > 0){
+        if(statusFilters.includes(status)){
+          filterAdd += 1;
+        }
+      }else{
+        filterAdd += 1;
+      }
+      if(difficultyFilters.length > 0){
+        if(difficultyFilters.includes(contests[i]["difficulty"])){
+          filterAdd += 1;
+        }
+      }else{
+        filterAdd += 1;
+      }
+      if (filterAdd >= 2) {
         isFilterPossible = true;
         problemCards[i].style.display = "";
       }

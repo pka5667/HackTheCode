@@ -164,6 +164,11 @@ def problemPageHandler(request, contestId, problemId):
                 problem = i
                 break
     problem["testCases"] = 'cannot show test cases'
+    for sample in problem["sampleInOut"]:
+        print(sample)
+        sample[0] = sample[0].replace("\n", "<br>")
+        sample[1] = sample[1].replace("\\n", "<br>")
+        print(sample[1])
     return render(request, 'Home/problem.html',
                   {'problem': problem, 'contestId': contestId, 'problemId': problemId})
 
@@ -299,6 +304,20 @@ def setSuccessfulSubmission(request, contestId, problemId):
             newValues = {"$set": {"totalPoints": usersTotalPoints + problemMaxScore}}
             userinfo.update_one(myQuery, newValues)
 
+        # increase successful problem number in user profile
+        userinfo = mydb.users  # collection name is users
+        user = userinfo.find({'email': str(request.user.email)})
+        if "submissions" in user:
+            submissions = user["submissions"]
+        else:
+            submissions = {}
+
+        if "successful" in submissions:
+            submissions["successful"] += 1
+        else:
+            submissions["successful"] = 1
+        userinfo.update({'email': str(request.user.email)}, {"$set": {"submissions": submissions}})
+
     # check if contest ended to check  what to return after adding user submitted problem on all the places(
     # userProfile, problem[submittedBy], leaderboard)
     if contestId != "practiceProblems":
@@ -309,10 +328,19 @@ def setSuccessfulSubmission(request, contestId, problemId):
 
 def handleCodeSubmision(request, contestId, problemId):
     if request.method == 'POST':
+        mydb = client['hackerRankClone']  # database name is hackerRankClone
+        userinfo = mydb.users  # collection name is users
+        user = userinfo.find({'email': str(request.user.email)})
+        user = list(user)
+        user = user[0]
+        if "submissions" in user:
+            submissions = user["submissions"]
+        else:
+            submissions = {}
+
         try:
             language = request.POST.get('language', default='')
             code = request.POST.get('code', default='')
-            mydb = client['hackerRankClone']  # database name is hackerRankClone
             if contestId == "practiceProblems":
                 problemsColl = mydb.practiceProblems  # collection name is practiceProblems
                 problems = problemsColl.find({'_id': ObjectId(problemId)})
@@ -329,6 +357,7 @@ def handleCodeSubmision(request, contestId, problemId):
                     if i["_id"] == ObjectId(problemId):
                         problem = i
                         break
+
             for testCase in problem["testCases"]:
                 testCase[0] = testCase[0].replace("\\n", "\n")
                 testCase[1] = testCase[1].replace("\\n", "\n")
@@ -351,6 +380,12 @@ def handleCodeSubmision(request, contestId, problemId):
                     if output["output"] == testCase[1]:
                         # check TLE also
                         if int(output["time"]) >= int(problem["time"]):
+                            if "tle" in submissions:
+                                submissions["tle"] += 1
+                            else:
+                                submissions["tle"] = 1
+                            userinfo.update({'email': str(request.user.email)}, {"$set": {"submissions": submissions}})
+
                             return HttpResponse(
                                 "Error in test case " + str(
                                     problem["testCases"].index(testCase) + 1) + "\nTLE")
@@ -358,17 +393,42 @@ def handleCodeSubmision(request, contestId, problemId):
                             # check for next test case
                             pass
                     else:
+                        if "tle" in submissions:
+                            submissions["wrong_answer"] += 1
+                        else:
+                            submissions["wrong_answer"] = 1
+                        userinfo.update({'email': str(request.user.email)}, {"$set": {"submissions": submissions}})
+
                         return HttpResponse("Error in test case " + str(
                             problem["testCases"].index(testCase) + 1) + "\nWrong answer")
                 else:
+                    if output["outputType"] == "rntError":
+                        if "runtime_error" in submissions:
+                            submissions["runtime_error"] += 1
+                        else:
+                            submissions["runtime_error"] = 1
+                    elif output["outputType"] == "cmpError":
+                        if "compile_error" in submissions:
+                            submissions["compile_error"] += 1
+                        else:
+                            submissions["compile_error"] = 1
+                    userinfo.update({'email': str(request.user.email)}, {"$set": {"submissions": submissions}})
+
                     returnStr = "Error " + output["outputType"] + " in test case " + str(
                         problem["testCases"].index(testCase) + 1) + "\nError:\n" + output["error"]
                     return HttpResponse(returnStr)
 
             # when all test cases are passed
+            # set succesful submission in users profile and in problem  id also
             returnStatement = setSuccessfulSubmission(request, contestId, problemId)
             return returnStatement
         except Exception as e:
+            if "compile_error" in submissions:
+                submissions["compile_error"] += 1
+            else:
+                submissions["compile_error"] = 1
+            userinfo.update({'email': str(request.user.email)}, {"$set": {"submissions": submissions}})
+
             if str(e) == "'KeyError' object is not subscriptable":
                 return HttpResponse("Compilation Error")
             return HttpResponse(e)

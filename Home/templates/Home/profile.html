@@ -252,25 +252,34 @@
                     <div class="font-weight-600 mb-3 text-muted mt-n2">Total Points: {{totalPoints}}</div>
                     <p></p>
                     <hr class="mt-4 mb-4" />
+                    
+                    <a href="/leaderboard/allUsers" class="text-decoration-none">
+                        <button class="btn btn-outline-success problem-btn"
+                            style="width: 200px;height: 50px;">View Leaderboard</button>
+                    </a>
                 </div>
             </div>
 
             <div class="profile-content">
+                <!---pie chart-->
+                <div id="chart-container" class="mb-4" style="height: 300px;justify-content: center;display: flex;"></div>
+
+                <!---sumisions of contests-->
                 <h5>Successful Submissions in Contests</h5>
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="tab-content p-0">
                             <div class="tab-pane fade active show" id="profile-followers">
                                 <div class="list-group">
-                                  {% if submissions|length > 0 %}
-                                    {% for submission in submissions %}
-                                      <a href="/contest/{{submission.0}}" class="text-decoration-none">
+                                  {% if submittedProblems|length > 0 %}
+                                    {% for submittedProb in submittedProblems %}
+                                      <a href="/contest/{{submittedProb.0}}" class="text-decoration-none">
                                         <div class="list-group-item d-flex align-items-center">
                                           <div class="flex-fill pl-3 pr-3">
-                                              <div><div class="text-dark font-weight-600">{{submission.1}}</div></div>
-                                              <div class="text-muted fs-13px">Contest Time: {{submission.2}}</div>
+                                              <div><div class="text-dark font-weight-600">{{submittedProb.1}}</div></div>
+                                              <div class="text-muted fs-13px">Contest Time: {{submittedProb.2}}</div>
                                           </div>
-                                          <button class="btn btn-outline-success ml-auto">View {{submission.3|length}} Submissions</button>
+                                          <button class="btn btn-outline-success ml-auto">View {{submittedProb.3|length}} Submissions</button>
                                         </div>
                                       </a>
                                     {% endfor %}
@@ -303,3 +312,44 @@
 </div>
 {% endblock body %}
 
+{% block js %}
+<!---code for the pie chart-->
+<script src="https://cdn.anychart.com/js/8.0.1/anychart-core.min.js"></script>
+<script src="https://cdn.anychart.com/js/8.0.1/anychart-pie.min.js"></script>
+<script>
+    anychart.onDocumentReady(function() {
+
+        // set the data
+        var data = [
+            //{x: "White", value: 223553265},
+        ];
+        var sum = 0
+
+        {% for key, value in submissions.items %}
+        data.push({x: "{{key}}", value: "{{value}}"});
+        sum += {{value}};
+        {% endfor %}
+
+        if(sum == 0){
+            var svg = `<svg xmlns="http://www.w3.org/2000/svg" style="max-width: 100%;max-height: 100%;justify-self: center;" viewBox="0 0 373 373" id="svgcontent" x="467.5" y="17.5"><defs></defs><g style="pointer-events:all"><title style="pointer-events:inherit">Layer 1</title><ellipse fill="#fff" stroke="#000" cx="186" cy="185.8" id="svg_1" rx="184" ry="184"></ellipse><text fill="#000000" stroke="#000" x="154" y="161.8" id="svg_3" stroke-width="0" font-size="47" font-family="sans-serif" text-anchor="start" xml:space="preserve" font-weight="bold">NO</text><text fill="#000000" stroke-width="0" x="47" y="236.8" id="svg_4" font-size="47" font-family="sans-serif" text-anchor="start" xml:space="preserve" font-weight="bold" stroke="#000">Submissions</text></g></svg>`
+            $("#chart-container").html(svg)
+        }
+        else{
+
+            // create the chart
+            var chart = anychart.pie();
+
+            // set the chart title
+            chart.title("Your all submissions record (Practice Problem and Contests)");
+
+            // add the data
+            chart.data(data);
+
+            // display the chart in the container
+            chart.container('chart-container');
+            chart.draw();
+        }
+
+    });
+</script>
+{% endblock js %}

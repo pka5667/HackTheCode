@@ -182,9 +182,9 @@ def profilePageHandler(request, userName):
 
     contestsColl = mydb.contests  # collection name is practiceProblems
 
-    submissions = [
-        # [id,name,totalSolvedProblemsNuber]
-        # [id,name,contestTime,[problems]]
+    submittedProblems = [
+        # [contestId,contestName,totalSolvedProblemsNumber]
+        # [contestId,contestName,contestTime,[problems]]
     ]
 
     if "submittedProblems" in user:
@@ -196,7 +196,7 @@ def profilePageHandler(request, userName):
                     contest = contests[0]
                     contestName = contest["contestName"]
                     contestStart = contest["start"]
-                    submissions.append([key, contestName, contestStart, user["submittedProblems"][key]])
+                    submittedProblems.append([key, contestName, contestStart, user["submittedProblems"][key]])
 
     # userDataFromDjangoAuth = SocialAccount.objects.filter(extra_data__contains=request.user.email)
     # userProfilePicture = userDataFromDjangoAuth[0].extra_data["picture"]
@@ -205,11 +205,24 @@ def profilePageHandler(request, userName):
         totalPoints = user["totalPoints"]
     else:
         totalPoints = 0
+
+    submissions = {
+        "successful": 0,
+        "wrong_answer": 0,
+        "tle": 0,
+        "runtime_error": 0,
+        "compile_error": 0
+    }
+    if "submissions" in user:
+        for key in user["submissions"]:
+            submissions[key] = user["submissions"][key]
+
     name = user["name"]
     params = {
         "name": name,
         "userName": userName,
         "profilePicture": userProfilePicture,
+        "submittedProblems": submittedProblems,
         "submissions": submissions,
         "totalPoints": totalPoints
     }

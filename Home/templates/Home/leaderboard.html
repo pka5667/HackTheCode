@@ -14,6 +14,15 @@
 {% endblock style %}
 
 {% block body %}
+
+{% if user.is_authenticated == False %}
+<script>
+  alert("Login/Signup to view this page");
+  window.location.href = '/'
+</script>
+{% endif %}
+
+
 <div class="container my-4 text-center">
   <h4>Ranklist - {{contestName}}</h4>
   <div class="row mb-3">

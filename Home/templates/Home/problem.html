@@ -30,15 +30,14 @@
 {% endblock style %}
 
 
+{% block body %}
+
 {% if user.is_authenticated == False %}
 <script>
   alert("Login/Signup to view this page");
-  window.location.href = '/';
+  window.location.href = '/'
 </script>
 {% endif %}
-
-
-{% block body %}
 
 <div class="container my-4">
 <div class="row">

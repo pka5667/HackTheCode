@@ -9,9 +9,10 @@ from bson import ObjectId
 client = pymongo.MongoClient(
     'mongodb+srv://pka5667:I4umh4UfJvWJhi48@cluster0.cfw04.mongodb.net/test?ssl=true&ssl_cert_reqs=CERT_NONE')
 
+mydb = client['hackerRankClone']  # database name is hackerRankClone
+
 
 def sortLeaderBoard(contestId):
-    mydb = client['hackerRankClone']
     contestsColl = mydb.contests  # collection name is contests
     # https: // docs.mongodb.com / manual / reference / method / db.collection.aggregate
     # https: // stackoverflow.com / questions / 12432727 / sort - nested - array - of - objects
@@ -30,7 +31,6 @@ def sortLeaderBoard(contestId):
 
 
 def contestStatusChacker():
-    mydb = client['hackerRankClone']  # database name is hackerRankClone
     contestsColl = mydb.contests  # collection name is contests
     contests = contestsColl.find()
     contestsArr = list(contests)

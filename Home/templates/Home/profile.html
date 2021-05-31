@@ -323,10 +323,22 @@
         var data = [
             //{x: "White", value: 223553265},
         ];
-        var sum = 0
+
+        var sum  = 0
 
         {% for key, value in submissions.items %}
-        data.push({x: "{{key}}", value: "{{value}}"});
+        {% if key == "successful" %}
+        var color = "green";
+        {% elif key == "wrong_answer" %}
+        var color = "red";
+        {% elif key == "tle" %}
+        var color = "#F7750F";
+        {% elif key == "runtime_error" %}
+        var color = "#8B572A";
+        {% elif key == "compile_error" %}
+        var color = "#6F6D6D";
+        {% endif %}
+        data.push({x: "{{key}}", value: "{{value}}", normal:  {fill: color}});
         sum += {{value}};
         {% endfor %}
 

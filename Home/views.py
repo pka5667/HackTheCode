@@ -15,10 +15,11 @@ from datetime import datetime, timedelta
 client = pymongo.MongoClient(
     'mongodb+srv://pka5667:I4umh4UfJvWJhi48@cluster0.cfw04.mongodb.net/test?ssl=true&ssl_cert_reqs=CERT_NONE')
 
+mydb = client['hackerRankClone']  # database name is hackerRankClone
+
 
 # Create your views here.
 def index(request):
-    mydb = client['hackerRankClone']  # database name is Employee
     totalPoints = 0
     userinfo = mydb.users  # collection name is users
     if request.user.is_authenticated:
@@ -115,7 +116,6 @@ def contact(request):
 
 
 def contestPageHandler(request, contestId):
-    mydb = client['hackerRankClone']  # database name
     contestsColl = mydb.contests  # collection name is practiceProblems
     contests = contestsColl.find({"_id": ObjectId(contestId)})
     contestsArr = list(contests)
@@ -132,7 +132,6 @@ def contestPageHandler(request, contestId):
 
 
 def practiceContestPageHandler(request):
-    mydb = client['hackerRankClone']  # database name
     problemsColl = mydb.practiceProblems  # collection name is practiceProblems
     problems = problemsColl.find({})
     problems_list = list(problems)
@@ -146,7 +145,6 @@ def practiceContestPageHandler(request):
 
 
 def problemPageHandler(request, contestId, problemId):
-    mydb = client['hackerRankClone']  # database name is hackerRankClone
     if contestId == "practiceProblems":
         problemsColl = mydb.practiceProblems  # collection name is practiceProblems
         problem = problemsColl.find({'_id': ObjectId(problemId)})
@@ -174,7 +172,6 @@ def problemPageHandler(request, contestId, problemId):
 
 
 def profilePageHandler(request, userName):
-    mydb = client['hackerRankClone']
     userinfo = mydb.users  # collection name is users
     user = userinfo.find({'username': userName})
     user = list(user)
@@ -236,7 +233,6 @@ def handleLogout(request):
 
 
 def setSuccessfulSubmission(request, contestId, problemId):
-    mydb = client['hackerRankClone']
     if contestId == "practiceProblems":
         problemsColl = mydb.practiceProblems  # collection name is practiceProblems
         problem = problemsColl.find({'_id': ObjectId(problemId)})
@@ -341,7 +337,6 @@ def setSuccessfulSubmission(request, contestId, problemId):
 
 def handleCodeSubmision(request, contestId, problemId):
     if request.method == 'POST':
-        mydb = client['hackerRankClone']  # database name is hackerRankClone
         userinfo = mydb.users  # collection name is users
         user = userinfo.find({'email': str(request.user.email)})
         user = list(user)
@@ -453,11 +448,9 @@ def leaderBoardPageHandler(request, contestId):
     if not request.user.is_authenticated:
         return HttpResponse("Login/Signup to see leaderboard")
 
-    mydb = client['hackerRankClone']  # database name is hackerRankClone
     myRank = 0
     myPoints = 0
     if contestId == "allUsers":
-        mydb = client['hackerRankClone']
         userinfo = mydb.users  # collection name is users
         users = userinfo.aggregate([
             # First sort all the docs by totalPoints

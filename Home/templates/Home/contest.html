@@ -24,13 +24,13 @@
 {% endblock style %}
 
 {% block body %}
-
+{% comment %} 
 {% if user.is_authenticated == False %}
 <script>
   alert("Login/Signup to view this page");
   window.location.href = '/'
 </script>
-{% endif %}
+{% endif %} {% endcomment %}
 
 <div class="container">
   <!--contest problems cards-->

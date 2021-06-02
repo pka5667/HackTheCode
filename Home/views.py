@@ -163,10 +163,8 @@ def problemPageHandler(request, contestId, problemId):
                 break
     problem["testCases"] = 'cannot show test cases'
     for sample in problem["sampleInOut"]:
-        print(sample)
         sample[0] = sample[0].replace("\n", "<br>")
         sample[1] = sample[1].replace("\\n", "<br>")
-        print(sample[1])
     return render(request, 'Home/problem.html',
                   {'problem': problem, 'contestId': contestId, 'problemId': problemId})
 

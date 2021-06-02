@@ -52,12 +52,14 @@
             <!-- safe is used to convert to html -->
             <br><br>
             {% for i in problem.sampleInOut %}
-            <strong>Sample Input</strong><br>
-            {{i.0|safe}}<br><br>
-            Sample Output<br>
+            <strong>Sample Input {{forloop.counter}}</strong><br><br>
+              {{i.0|safe}}<br><br>
+            <strong>Sample Output</strong><br><br>
+            <code>
             {{i.1|safe}}<br><br>
+            </code>
             {% if i|length > 2 %}
-            Explanation<br>
+            <strong>Explanation</strong><br><br>
             {{i.2|safe}}<br><br>
             {% endif %}
             {% endfor %}

@@ -334,6 +334,8 @@ def setSuccessfulSubmission(request, contestId, problemId):
 
 
 def handleCodeSubmision(request, contestId, problemId):
+    if not request.user.is_authenticated:
+        return HttpResponse("Login/Signup to submit the problem")
     if request.method == 'POST':
         userinfo = mydb.users  # collection name is users
         user = userinfo.find({'email': str(request.user.email)})

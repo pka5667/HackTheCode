@@ -32,12 +32,14 @@
 
 {% block body %}
 
+{% comment %}
 {% if user.is_authenticated == False %}
 <script>
   alert("Login/Signup to view this page");
   window.location.href = '/'
 </script>
 {% endif %}
+{% endcomment %}
 
 <div class="container my-4">
 <div class="row">

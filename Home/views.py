@@ -31,7 +31,7 @@ def index(request):
             while True:
                 findUserName = userinfo.find({'username': checkUserName})
                 if findUserName.count() == 0:
-                    userName = str(request.user)
+                    user_name = str(request.user)
                     break
                 else:
                     checkUserName = checkUserName + random.choice(string.ascii_letters)
@@ -39,28 +39,28 @@ def index(request):
             userProfilePicture = userDataFromDjangoAuth[0].extra_data["picture"]
             userFullName = userDataFromDjangoAuth[0].extra_data["name"]
             record = {
-                'username': userName,
+                'username': user_name,
                 'email': request.user.email,
                 'name': userFullName,
                 'profilePicture': userProfilePicture
             }
             userinfo.insert_one(record)  # insert to dbsqlite(django default database)
         else:
-            userArr = list(user)
-            userName = userArr[0]["username"]
-            if "totalPoints" in userArr[0]:
-                totalPoints = userArr[0]["totalPoints"]
+            user_arr = list(user)
+            user_name = user_arr[0]["username"]
+            if "totalPoints" in user_arr[0]:
+                totalPoints = user_arr[0]["totalPoints"]
 
         # check if the username is same in both mongoDb and sqLite db
         # if not then change in sqlite
         reqUser = request.user
-        if str(request.user.username) != userName:
-            reqUser.username = userName
+        if str(request.user.username) != user_name:
+            reqUser.username = user_name
             reqUser.save()
 
     # get all the contests
-    contestsColl = mydb.contests  # collection name is contests
-    contests = contestsColl.find({})
+    contests_coll = mydb.contests  # collection name is contests
+    contests = contests_coll.find({})
     contests = list(contests)
     liveContests = []
     upcomingContests = []
@@ -448,7 +448,7 @@ def leaderBoardPageHandler(request, contestId):
     if not request.user.is_authenticated:
         return HttpResponse("Login/Signup to see leaderboard")
 
-    myRank = 0
+    my_rank = 0
     myPoints = 0
     if contestId == "allUsers":
         userinfo = mydb.users  # collection name is users
@@ -461,7 +461,7 @@ def leaderBoardPageHandler(request, contestId):
         users = list(users)
         leaderboard = []
         flag = 0
-        myRank = 0
+        my_rank = 0
         for i in range(0, len(users)):
             if i <= 100 and "username" in users[i] and "totalPoints" in users[i]:
                 leaderboard.append({
@@ -470,7 +470,7 @@ def leaderBoardPageHandler(request, contestId):
                 })
             if "username" in users[i]:
                 if users[i]["username"] == str(request.user):
-                    myRank = i + 1
+                    my_rank = i + 1
                     if "totalPoints" in users[i]:
                         myPoints = users[i]["totalPoints"]
                     else:
@@ -494,4 +494,4 @@ def leaderBoardPageHandler(request, contestId):
         else:
             leaderboard = []
     return render(request, "Home/leaderboard.html",
-                  {"contestName": contestName, "leaderboard": leaderboard, "myRank": myRank, "myPoints": myPoints})
+                  {"contestName": contestName, "leaderboard": leaderboard, "my_rank": my_rank, "myPoints": myPoints})

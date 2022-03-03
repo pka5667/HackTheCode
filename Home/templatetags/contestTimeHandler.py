@@ -1,13 +1,14 @@
 import threading
 from datetime import datetime
 from time import sleep
+import os
 
 import pymongo
 import requests
 from bson import ObjectId
 
 client = pymongo.MongoClient(
-    'mongodb+srv://pka5667:I4umh4UfJvWJhi48@cluster0.cfw04.mongodb.net/test?ssl=true&ssl_cert_reqs=CERT_NONE')
+    os.getenv('MONGO_USER_PASS'))
 
 mydb = client['hackerRankClone']  # database name is hackerRankClone
 

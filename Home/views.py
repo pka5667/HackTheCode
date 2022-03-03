@@ -1,5 +1,6 @@
 import random
 import string
+import os
 
 import pymongo
 from allauth.socialaccount.models import SocialAccount
@@ -12,8 +13,9 @@ from .templatetags.contestTimeHandler import sortLeaderBoard
 
 from datetime import datetime, timedelta
 
+
 client = pymongo.MongoClient(
-    'mongodb+srv://pka5667:I4umh4UfJvWJhi48@cluster0.cfw04.mongodb.net/test?ssl=true&ssl_cert_reqs=CERT_NONE')
+    os.getenv('MONGO_USER_PASS'))
 
 mydb = client['hackerRankClone']  # database name is hackerRankClone
 
@@ -116,7 +118,7 @@ def contact(request):
 
 
 def contestPageHandler(request, contestId):
-    contestsColl = mydb.contests  # collection name is practiceProblems
+    contestsColl = mydb.contests  # collection name is contests
     contests = contestsColl.find({"_id": ObjectId(contestId)})
     contestsArr = list(contests)
     contest = contestsArr[0]
